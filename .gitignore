@@ -1,0 +1,65 @@
+# Build, distribution and packaging output.
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+parts/
+sdist/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+docs/_build/
+target/
+
+# Cache.
+.mypy_cache/
+
+# Compiled files.
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.o
+
+# Editor/IDE litter.
+*.swp*
+.idea/
+
+# Environments.
+env/
+.venv/
+
+# iPython files.
+.ipython/*
+!.ipython/profile_default
+.ipython/profile_default/*
+!.ipython/profile_default/ipython_config.py
+
+# Logs.
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Misc.
+*~
+
+# OS litter.
+.DS_Store
+
+# Unit testing and code coverage.
+htmlcov/
+.cache
+*.cover
+.coverage
+.coverage.*
+coverage.xml
+.hypothesis/
+nosetests.xml
+.tox/
+
+# Interactive testing.
+testing/*
+!testing/*.ipynb

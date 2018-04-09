@@ -1,0 +1,10 @@
+[requires]
+python_version = "3.6"
+
+[packages]
+ruamel.yaml = "*"
+
+[dev-packages]
+mypy = "*"
+flake8 = "*"
+dotmacos = { path = ".", editable = true }
