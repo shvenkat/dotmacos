@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 from pathlib import Path
 import re
-from setuptools import setup, find_packages
+from setuptools import setup
 from typing import List
 
 
@@ -12,9 +12,11 @@ def get_version() -> str:
     info_path = Path(__file__).parent / PROJECT_NAME / "__init__.py"
     with open(info_path, "rt") as info_handle:
         info = info_handle.read()
-    pattern = r"^__version__ = *[\"'](.+)[\"']"
     try:
-        version = re.search(pattern, info, re.MULTILINE).group(1)
+        version = (re.search(r"^__version__ = *[\"'](.+)[\"']",  # type: ignore
+                             info,
+                             re.MULTILINE)
+                   .group(1))
     except Exception as e:
         raise RuntimeError("Failed to parse version string from {path}"
                            .format(path = info_path.as_posix()))
@@ -35,18 +37,14 @@ def get_required_packages_from_pipfile() -> List[str]:
 setup(
     name = PROJECT_NAME,
     version = get_version(),
-    description = "Manage MacOS preferences using YAML config files.",
-
-    # Include all python packages and modules in this repo.
-    packages = PROJECT_NAME,
+    description = "Manage Mac OS and app preferences using config files.",
+    packages = [PROJECT_NAME],
     py_modules = [],
+    install_requires = get_required_packages_from_pipfile(),
 
     # Generate entry-points (i.e. executable scripts) in the environment.
     entry_points = """
         [console_scripts]
         {name}={name}.cli:main
     """.format(name = PROJECT_NAME),
-
-    # Install dependencies.
-    install_requires = get_required_packages_from_pipfile(),
 )

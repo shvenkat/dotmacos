@@ -2,7 +2,9 @@
 python_version = "3.6"
 
 [packages]
-ruamel.yaml = "*"
+click = "*"
+click-completion = "*"
+pyjson5 = "*"
 
 [dev-packages]
 mypy = "*"
