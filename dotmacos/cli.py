@@ -5,10 +5,7 @@ from typing import FrozenSet, List
 import click
 import click_completion
 
-from .config_formats import FileFormat, read_config_file
-from .mac_prefs import get_prefs
-from .pref_ops import show_diff
-from .util import accessible_section_names
+from .prefs import FileFormat, Sections
 
 
 CONFIG_FORMATS: FrozenSet[str] = frozenset(FileFormat.__members__.keys())
@@ -79,34 +76,48 @@ def set(format: str, no_restart_apps: bool, files: List[Path]) -> None:
 @click.command()
 @click.option("--format", type = click.Choice(CONFIG_FORMATS), required = True,
               help = "Format of config files.")
-@click.argument("files", type = Path, nargs = -1)
-def get(format: str, files: List[Path]) -> None:
+@click.option("--all-keys", is_flag = True,
+              help = "Include keys not in the config files.")
+@click.argument("config_paths", type = Path, nargs = -1)
+def get(format: str, all_keys: bool, config_paths: List[Path]) -> None:
     """Get OS and app preferences, writing them to existing config files. Only
-    keys in the config files are written. Values are merged, with retrieved
-    preferences taking precedence."""
-    raise NotImplementedError()
+    keys in the config files are written, unless all_keys is True. Values are
+    merged, with retrieved preferences taking precedence."""
+    if len(config_paths) == 0:
+        raise ValueError("Specify one or more config files.")
+    file_format = FileFormat[format]
+    for config_path in config_paths:
+        (Sections
+         .from_config_file(path = config_path, file_format = file_format)
+         .merge_from_os(all_keys = all_keys)
+         .to_config_file(config_path, file_format = file_format))
 
 
 @click.command()
 @click.option("--format", type = click.Choice(CONFIG_FORMATS), required = True,
               help = "Format of config files.")
-@click.argument("files", type = Path, nargs = -1)
-def diff(format: str, config_paths: List[Path]) -> None:
+@click.option("--all-keys", is_flag = True,
+              help = "Include keys not in the config files.")
+@click.argument("config_paths", type = Path, nargs = -1)
+def diff(format: str, all_keys: bool, config_paths: List[Path]) -> None:
     """Show differences between current OS and app preferences, and config
     files. Only keys in the config files are used. Keys, values and value types
     are compared."""
+    if len(config_paths) == 0:
+        raise ValueError("Specify one or more config files.")
+    file_format = FileFormat[format]
     for config_path in config_paths:
-        sections = read_config_file(
-            config_path, config_format = FileFormat[format],
-            include_sections = accessible_section_names())
-        for section, domains in sections.items():
-            for domain, file_prefs in domains.items():
-                set_prefs = get_prefs(domain = domain, section = section)
-                show_diff(set_prefs, file_prefs)
+        diff_text = (
+            Sections
+            .from_config_file(path = config_path, file_format = file_format)
+            .diff_with_os(all_keys = all_keys))
+        if len(diff_text) > 0:
+            print("\n" + config_path.as_posix() + ":\n")
+            print("  " + diff_text.replace("\n", "\n  "))
 
 
 @click.group()
-def dotmacos():
+def dotmacos() -> None:
     """Manage Mac OS and app preferences using config files."""
     pass
 
@@ -117,17 +128,15 @@ dotmacos.add_command(get)
 dotmacos.add_command(diff)
 
 
-def main():
+def main() -> None:
     """This function is called by executable scripts. It calls the main CLI
     dispatcher and handles uncaught exceptions."""
     try:
         dotmacos()
     except SystemExit:  # Raised by sys.exit(), so pass it through.
         raise
-    except BaseException as e:
-        error(status = 1, exception = e)
-        # sys.stderr.write("ERROR: {}\n".format(str(e)))
-        # sys.exit(1)
+    # except BaseException as e:
+    #     error(status = 1, exception = e)
 
 
 def error(status: int, message: str = "",
