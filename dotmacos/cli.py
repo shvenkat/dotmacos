@@ -112,7 +112,7 @@ def diff(format: str, all_keys: bool, config_paths: List[Path]) -> None:
             .from_config_file(path = config_path, file_format = file_format)
             .diff_with_os(all_keys = all_keys))
         if len(diff_text) > 0:
-            print("\n" + config_path.as_posix() + ":\n")
+            print("\n" + config_path.as_posix() + ":")
             print("  " + diff_text.replace("\n", "\n  "))
 
 

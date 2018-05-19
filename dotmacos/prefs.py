@@ -85,7 +85,7 @@ class Prefs(Dict):
 
     @staticmethod
     def diff(*, old: "Prefs", new: "Prefs") -> str:
-        adds = ["{key}: {value}".format(key = key, value = value)
+        adds = ["<absent> -> {key}: {value}".format(key = key, value = value)
                 for key, value in new.items()
                 if key not in old]
         modifs = [("{key}: {old} -> {new}"
@@ -96,8 +96,7 @@ class Prefs(Dict):
                            old_type = type(old[key]), new_type = type(value)))
                   for key, value in new.items()
                   if key in old and value != old[key]]
-        return ("Additions:\n{adds}\nChanges:\n{modifs}"
-                .format(adds = "\n".join(adds), modifs = "\n".join(modifs)))
+        return "\n".join(adds + modifs)
 
     @classmethod
     def from_os(cls, *, section: str, domain: str,
@@ -256,18 +255,24 @@ class Sections(Dict):
                                   keys = None if all_keys else prefs.keys()))
             return ("{domain}:\n{diff}"
                     .format(domain = domain,
-                            diff = "  " + diff.replace("\n", "\n  ")))
+                            diff = "  " + diff.replace("\n", "\n  "))
+                    if len(diff) > 0 else
+                    "")
 
         def diff_section(section: str, domains: Domains) -> str:
-            diff = "\n".join([diff_domain(section, domain, prefs)
-                              for domain, prefs in domains.items()])
+            diff = "\n".join(filter(lambda e: len(e) > 0,
+                                    [diff_domain(section, domain, prefs)
+                                     for domain, prefs in domains.items()]))
             return ("{section}:\n{diff}"
                     .format(section = section,
-                            diff = "  " + diff.replace("\n", "\n  ")))
+                            diff = "  " + diff.replace("\n", "\n  "))
+                    if len(diff) > 0 else
+                    "")
 
-        return "\n".join([diff_section(section, domains)
-                          for section, domains in self.items()
-                          if section in ACCESSIBLE_SECTIONS])
+        return "\n".join(filter(lambda e: len(e) > 0,
+                                [diff_section(section, domains)
+                                 for section, domains in self.items()
+                                 if section in ACCESSIBLE_SECTIONS]))
 
     def merge_from_os(self, all_keys: bool = False) -> "Sections":
         return Sections(
