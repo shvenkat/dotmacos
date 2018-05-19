@@ -245,14 +245,19 @@ class Sections(Dict):
     #             result[section] = domains
     #     return Sections(result)
 
-    def diff_with_os(self, all_keys: bool = False) -> str:
+    def diff_with_os(self, os_is_base: bool, all_keys: bool = False) -> str:
 
         def diff_domain(section: str, domain: str, prefs: Prefs) -> str:
-            diff = Prefs.diff(old = prefs,
-                              new = Prefs.from_os(
-                                  section = section,
-                                  domain = domain,
-                                  keys = None if all_keys else prefs.keys()))
+            if os_is_base:
+                diff = Prefs.diff(
+                    old = Prefs.from_os(section = section, domain = domain),
+                    new = prefs)
+            else:
+                diff = Prefs.diff(
+                    old = prefs,
+                    new = Prefs.from_os(
+                        section = section, domain = domain,
+                        keys = None if all_keys else prefs.keys()))
             return ("{domain}:\n{diff}"
                     .format(domain = domain,
                             diff = "  " + diff.replace("\n", "\n  "))

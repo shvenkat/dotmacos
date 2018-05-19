@@ -1,0 +1,62 @@
+                                 DOTMACOS MANUAL
+
+${bold}NAME${reset}
+    dotmacos - Manage Mac OS and app preferences using config files
+
+${bold}SYNOPSIS${reset}
+    dotmacos help
+    dotmacos set [--dry-run] [--no-restart-apps] --format FMT file1 ...
+    dotmacos get [--dry-run] [--all-keys] --format FMT file1 ...
+
+${bold}DESCRIPTION${reset}
+    This utility sets preferences from, and saves them to, structured config
+    files. Multiple file formats are supported. The files must have the
+    following structure.
+
+        <section>:
+          <domain>:
+            <key>: <value>
+
+    Valid sections are "user", "local" and "system" corresponding to preferences
+    accessed using `defaults read|write`, `defaults -currentHost read|write` and
+    `sudo defaults read|write` respectively. To get or set "system" preferences,
+    dotmacos must be run as root, e.g. `sudo dotmacos set ...`. Note that to get
+    or set "user" and/or "local" preferences, run dotmacos as your regular user.
+
+    Valid domains are those accepted by the `defaults` command. The domains
+    currently in use can be listed using `[sudo] defaults [-currentHost]
+    domains`.
+
+    Valid keys and values are those used by the OS and/or applications. You can
+    list the keys and values currently in use for a given domain using `[sudo]
+    defaults [-currentHost] <domain>`. Alternatively, you can use `dotmacos get`
+    to get the current keys and values for all domains or for domains of your
+    choosing.
+
+${bold}EXAMPLES{reset}
+    example.yaml:
+
+        user:
+          NSGlobalDomain:
+            AppleLocale: en_US
+            AppleLanguages:
+            - en
+
+          com.apple.finder:
+            ShowPreviewPane: true
+
+        local:
+          com.apple.screensaver:
+            showClock: true
+
+        system:
+          NSGlobalDomain:
+            ...
+
+    The above settings can be set using:
+
+        # Set user and local sections.
+        dotmacos set --format yaml example.yaml
+
+        # Set system section.
+        sudo dotmacos set --format yaml example.yaml

@@ -24,7 +24,8 @@ def get_version() -> str:
 
 
 def get_required_packages_from_pipfile() -> List[str]:
-    """Parses Pipfile to get the list of required packages (not dev-packages)."""
+    """Parses Pipfile to get the list of required packages (not dev-packages).
+    """
     pipfile_path = Path(__file__).parent / "Pipfile"
     if not pipfile_path.exists():
         return []
@@ -38,8 +39,11 @@ setup(
     name = PROJECT_NAME,
     version = get_version(),
     description = "Manage Mac OS and app preferences using config files.",
+
     packages = [PROJECT_NAME],
     py_modules = [],
+    package_data = {"dotmacos": ["man.txt"]},
+    include_package_data = True,
     install_requires = get_required_packages_from_pipfile(),
 
     # Generate entry-points (i.e. executable scripts) in the environment.
