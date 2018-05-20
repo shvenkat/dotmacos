@@ -55,11 +55,11 @@ at https://github.com/shvenkat/dotmacos.
   * Set preferences from human-readable config files, with string keys,
     explicitly typed values, and optional comments.
 
-  * A type mismatch between old and new values for any preference key should be
-    reported as a warning.
-
   * Save _a relevant subset_ of preferences to config files, preserving
     comments.
+
+  * A type mismatch between old and new values for any preference key should be
+    reported as a warning.
 
 ## Design
 
@@ -91,10 +91,8 @@ at https://github.com/shvenkat/dotmacos.
 
   * Use the following UI:
 
-        dotmacos help
-        dotmacos set  --format json5 foo.json5 [bar.json5 [...]] [--quit-apps]
-        dotmacos get  --format json5 foo.json5 [bar.json5 [...]]
-        dotmacos diff --format json5 foo.json5 [bar.json5 [...]]
+        dotmacos set --format json5 foo.json5 ...
+        dotmacos get --format json5 foo.json5 ...
 
   * Use Python for implementation. It is included on MacOS and has a plist
     library.
