@@ -93,7 +93,8 @@ class Prefs(Dict):
                    if isinstance(value, type(old[key])) else
                    "{key}: ({old_type}) {old} -> ({new_type}) {new}"
                    .format(key = key, old = str(old[key]), new = value,
-                           old_type = type(old[key]), new_type = type(value)))
+                           old_type = type(old[key]).__name__,
+                           new_type = type(value).__name__))
                   for key, value in new.items()
                   if key in old and value != old[key]]
         return "\n".join(adds + modifs)

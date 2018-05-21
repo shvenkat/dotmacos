@@ -96,3 +96,16 @@ at https://github.com/shvenkat/dotmacos.
 
   * Use Python for implementation. It is included on MacOS and has a plist
     library.
+
+
+# NOTES
+
+To close apps like System Preferences, use:
+
+    # Close any open System Preferences panes to avoid concurrent updates.
+    ! which osascript 1>/dev/null 2>&1 \
+        || osascript -e 'tell application "System Preferences" to quit'
+
+The user may need to restart their affected apps to pick up new settings.
+
+    warn "You may need to quit applications for some settings to take effect."

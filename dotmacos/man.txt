@@ -33,7 +33,7 @@ ${bold}DESCRIPTION${reset}
     to get the current keys and values for all domains or for domains of your
     choosing.
 
-${bold}EXAMPLES{reset}
+${bold}EXAMPLES${reset}
     example.yaml:
 
         user:
