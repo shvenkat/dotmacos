@@ -230,22 +230,6 @@ class Sections(Dict):
                   for section, domains in mapping.items()})
         return cast(Sections, self)
 
-    # @staticmethod
-    # def merge(*, old: "Sections", new: "Sections") -> "Sections":
-    #     result = dict(old)
-    #     for section, domains in new.items():
-    #         if section in old:
-    #             result[section] = dict(old[section])
-    #             for domain, prefs in domains.items():
-    #                 if domain in old[section]:
-    #                     result[section][domain] = Prefs.merge(
-    #                         old = old[section][domain], new = prefs)
-    #                 else:
-    #                     result[section][domain] = prefs
-    #         else:
-    #             result[section] = domains
-    #     return Sections(result)
-
     def diff_with_os(self, os_is_base: bool, all_keys: bool = False) -> str:
 
         def diff_domain(section: str, domain: str, prefs: Prefs) -> str:
