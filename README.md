@@ -66,7 +66,9 @@ at https://github.com/shvenkat/dotmacos.
   * Use the builtin `defaults` command to get and set preferences. This is the
     recommended interface for scripts to use the MacOS preference system and
     also updates the `cfprefsd` cache. Writing plist files directly may result
-    in preferences being ignored or overwritten.
+    in preferences being [ignored or overwritten][sticky_prefs].
+    
+    [sticky_prefs]: https://eclecticlight.co/2017/07/06/sticky-preferences-why-trashing-or-editing-them-may-not-change-anything/
 
   * Close apps before setting preferences to prevent apps from ignoring or
     over-writing the updated preferences. Re-start closed apps after setting
